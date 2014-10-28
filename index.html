@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Infprog Oblig 4</title>
+	<meta charset="utf-8" />
+	<link href='http://fonts.googleapis.com/css?family=Roboto+Condensed' rel='stylesheet' type='text/css' />
+	<link rel="stylesheet" type="text/css" href="stylesheet.css" />
+</head>
+<body>
+	<main>
+		<header>
+			<h1>Gravity Simulator</h1>
+		</header>
+		<section>
+			<div class="container">
+				<canvas id="myCanvas" width="800" height="600"></canvas>
+				<form>
+					<label class="gravity">Gravity</label>
+					<input type="range" min="0" max="2" value="0.6" step="0.1" id="gravity" onchange="changeValues();"/>
+
+					<input type="range" min="0" max="1" value="0.8" step="0.05" id="friction" onchange="changeValues();" />
+					<label class="friction">Friction</label>
+				</form>
+			</div>
+			<div class="explanation">
+				<p>Dette er en gravitasjons simulering. Trykk på canvas for å lage en ball. Den vil ha tilfeldig størrelse, farge, retning og hastighet. Du kan plukke opp baller ved å holde ned venstre musetast, og du kan slenge den i en retning basert på farten av musa di når du slepper knappen. Gravity og slideren går fra 0 til 2 med intervaller på 0,1. Hvis gravity er 0, så vil ikke sirkelen aksellerere, men får høyere aksellerasjon jo mer du skrur opp slideren. Friction fungerer på samme måte, men litt motsatt. Friction går fra 0 til 0 med intervaller på 0,05. Hvis friction er 0, vil ballen miste all sin energi når den treffer en vegg, men hvis den er 1 vil den ikke miste noe energi.</p>
+				<p>I utvikling vil eventuellt være elastisk støt på ballene, men dette er ganske krevende og fungerer ikke optimalt.</p>
+			</div>
+			<script type="text/javascript" src="script.js"></script>
+		</section>
+	</main>
+</body>
+</html>
