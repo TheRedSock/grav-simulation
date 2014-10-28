@@ -284,39 +284,34 @@ function checkCollision(i) {
 	 				var m1 = circleArray[i].r;
 	 				var m2 = circleArray[j].r;
 
-					/* Prøver meg på formel:
-					   http://en.wikipedia.org/wiki/Elastic_collision#Two-Dimensional_Collision_With_Two_Moving_Objects
-				 	   ser også på:
-				 	   http://www.hoomanr.com/Demos/Elastic2/
-				 	   Det fungerer ikke, men noen ganger sender det i riktig retning. ??? */
-				 	   
-	 				var d1 = u1x * u1y * Math.cos(Math.atan2(u1y, u1x));
-	 				var d2 = u2x * u2y * Math.cos(Math.atan2(u2y, u2x));
-	 				var A = Math.atan2((y1 - y2), (x1 - x2));
+					// Kalkuler kollisjonsvinkel:
+	 				var phi = Math.atan2(dy, dx);
 
-	 				var cosd1A = Math.cos(d1 - A);
-	 				var cosd2A = Math.cos(d2 - A);
-	 				var sind1A = Math.sin(d1 - A);
-	 				var sind2A = Math.sin(d2 - A);
+	 				// Kalkuler vinkel på hver vektor:
+	 				var d1 = Math.atan2(u1y, u1x);
+	 				var d2 = Math.atan2(u2y, u2x);
 
-	 				circleArray[i].vx = ((((u1x * cosd1A * (m1 - m2)) + (2 * m2 * u2x * cosd2A)) / (m1 + m2)) * Math.cos(A)) + (u1x * sind1A * Math.cos(A + (Math.PI / 2)));
-	 				circleArray[i].vy = ((((u1y * cosd1A * (m1 - m2)) + (2 * m2 * u2y * cosd2A)) / (m1 + m2)) * Math.sin(A)) + (u1y * sind1A * Math.sin(A + (Math.PI / 2)));
-
-	 				circleArray[j].vx = ((((u2x * cosd2A * (m2 - m1)) + (2 * m1 * u1x * cosd1A)) / (m2 + m1)) * Math.cos(A)) + (u2x * sind2A * Math.cos(A + (Math.PI / 2)));
-	 				circleArray[j].vy = ((((u2y * cosd2A * (m2 - m1)) + (2 * m1 * u1y * cosd1A)) / (m2 + m1)) * Math.sin(A)) + (u2y * sind2A * Math.sin(A + (Math.PI / 2)));
+	 				// Kalkuler magnitude på hver vektor:
+	 				var mag1 = Math.sqrt((u1x * u1x) + (u1y * u1y));
+	 				var mag2 = Math.sqrt((u2x * u2x) + (u2y * u2y));
 	 				
-	 				/* En dimensjonal elastisk støt formel for hver vektor.
-	 				   Dette er ikke riktig formel. */
-	 				/*circleArray[i].vx = ((u1x * (m1 - m2)) + (2 * (m2 * u2x))) / (m1 + m2);
-	 				circleArray[j].vx = ((u2x * (m2 - m1)) + (2 * (m1 * u1x))) / (m1 + m2);
-	 				circleArray[i].vy = ((u1y * (m1 - m2)) + (2 * (m2 * u2y))) / (m1 + m2);
-	 				circleArray[j].vy = ((u2y * (m2 - m1)) + (2 * (m1 * u1y))) / (m1 + m2);*/
 
-	 				// For å legge friksjon på støt mellom kuler.
-	 				/*circleArray[i].vx *= bounceFactor;  
-	 				circleArray[j].vx *= bounceFactor;
-	 				circleArray[i].vy *= bounceFactor;
-	 				circleArray[j].vy *= bounceFactor;*/
+	 				var newu1x = mag1 * Math.cos(d1 - phi);
+	 				var newu1y = mag1 * Math.sin(d1 - phi);
+	 				var newu2x = mag2 * Math.cos(d2 - phi);
+	 				var newu2y = mag2 * Math.sin(d2 - phi);
+	 				
+	 				// Få nye vektorer:
+	 				var v1x = (((m1 - m2) * newu1x) + ((2 * m2) * newu2x)) / (m1 + m2);
+	 				var v1y = newu1y;
+	 				var v2x = (((m2 - m1) * newu2x) + ((2 * m1) * newu1x)) / (m1 + m2);
+	 				var v2y = newu2y;
+
+	 				// Sett ny vektorer:
+	 				circleArray[i].vx = (Math.cos(phi) * v1x) + (Math.cos(phi + Math.PI/2) * v1y);
+	 				circleArray[i].vy = (Math.sin(phi) * v1x) + (Math.sin(phi + Math.PI/2) * v1y);
+	 				circleArray[j].vx = (Math.cos(phi) * v2x) + (Math.cos(phi + Math.PI/2) * v2y);
+	 				circleArray[j].vy = (Math.sin(phi) * v2x) + (Math.sin(phi + Math.PI/2) * v2y);
 	 				
 	 				/* For å dytte kuler vekk for å unngå kollisjon over flere frames.
 	 				   Fungerer ikke optimalt.
