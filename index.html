@@ -23,8 +23,9 @@
 				</form>
 			</div>
 			<div class="explanation">
-				<p>Dette er en gravitasjons simulering. Trykk på canvas for å lage en ball. Den vil ha tilfeldig størrelse, farge, retning og hastighet. Du kan plukke opp baller ved å holde ned venstre musetast, og du kan slenge den i en retning basert på farten av musa di når du slepper knappen. Gravity og slideren går fra 0 til 2 med intervaller på 0,1. Hvis gravity er 0, så vil ikke sirkelen aksellerere, men får høyere aksellerasjon jo mer du skrur opp slideren. Friction fungerer på samme måte, men litt motsatt. Friction går fra 0 til 0 med intervaller på 0,05. Hvis friction er 0, vil ballen miste all sin energi når den treffer en vegg, men hvis den er 1 vil den ikke miste noe energi.</p>
-				<p>I utvikling vil eventuellt være elastisk støt på ballene, men dette er ganske krevende og fungerer ikke optimalt.</p>
+				<p>Dette er en gravitasjons simulering. Trykk på canvas for å lage en ball. Den vil ha tilfeldig størrelse, farge, retning og hastighet. Du kan plukke opp baller ved å holde ned venstre musetast, og du kan slenge den i en retning basert på farten av musa di når du slepper knappen. Ballene vil også sprette av hverandre. Gravity og slideren går fra 0 til 2 med intervaller på 0,1. Hvis gravity er 0, så vil ikke sirkelen aksellerere, men får høyere aksellerasjon jo mer du skrur opp slideren. Friction fungerer på samme måte, men litt motsatt. Friction går fra 0 til 1 med intervaller på 0,05. Hvis friction er 0, vil ballen miste all sin energi når den treffer en vegg (Kan miste litt likevel ser det ut som), men hvis den er 1 vil den ikke miste noe energi.</p>
+				<p>Jo fler baller du har, jo mer buggy blir det, dette er pga dårlig formel for å sørge for at en kollisjon ikke hender mer enn en gang per frame. Hadde ikke tid til å fikse dette før innlevering. Hvis du finner andre bugs er det bare å legge en kommentar på github!</p>
+				<p>Kildekode finner du på <a href="https://github.com/TheRedSock/grav-simulation">github prosjektet</a>.</p>
 			</div>
 			<script type="text/javascript" src="script.js"></script>
 		</section>
