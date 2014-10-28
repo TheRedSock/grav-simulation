@@ -224,11 +224,16 @@ function checkDirection(i) {
 
 		// Reverser retningen og reduser fart.
 		circleArray[i].vy *= -bounceFactor;
+		
+		/* Ekstra bouncefactor når den treffer bakken.
+		   Dette er for at den mister fart i x retning når y ikke endres mer.
+		   Dette kan gjøres bedre. */
 		circleArray[i].vx *= bounceFactor;
 	}
 
-	/* De andre er identiske.
-	   Hvis den treffer taket. */
+	// De andre er identiske. (Utenom ekstra bouncefactor)
+	
+	// Hvis den treffer taket. 
 	if (circleArray[i].y - circleArray[i].r <= 0) {
 		circleArray[i].y = 0 + circleArray[i].r;
 		circleArray[i].vy *= -bounceFactor;
