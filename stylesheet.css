@@ -1,0 +1,46 @@
+body {
+	background-color: black;
+	font-family: 'Roboto Condensed', sans-serif;
+	color: white;
+}
+
+h1 {
+	color: white;
+	text-align: center;
+}
+
+canvas {
+	border: 1px solid;
+	border-color: white;
+	display: block;
+	margin: auto;
+}
+
+form {
+	width: 800px;
+	height: 600px;
+}
+
+.explanation {
+	color: white;
+	margin: 5%;
+}
+
+.container {
+	width: 800px;
+	height: 600px;
+	display: block;
+	margin: auto;
+}
+
+.gravity {
+	float: left;
+}
+
+.friction {
+	float: right;
+}
+
+#friction {
+	float: right;
+}
