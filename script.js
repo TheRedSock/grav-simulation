@@ -16,6 +16,7 @@ var ctx = canvas.getContext('2d');
 var circleArray = [];
 var mouseDownBoolean = false;
 var clickBoolean = false;
+var isPaused = false;
 var selectedCircle = [];
 var bounceFactor = parseFloat(document.getElementById('friction').value);
 var gravity = parseFloat(document.getElementById('gravity').value);
@@ -90,6 +91,87 @@ canvas.addEventListener('mouseup', function(evt) {
 		mouseDownBoolean = false;
 	}
 });
+
+// Funksjon som pauser bildet når du klikker på knappen.
+function pause(){
+	pauseButton = document.getElementById('pause');
+
+	// Hvis den ikke er pauset:
+	if(isPaused === false) {
+
+		// Sett den til pauset.
+		isPaused = true;
+
+		// Endre grafikken til knappen.
+		pauseButton.innerHTML = "Unpause";
+		pauseButton.style.marginLeft = "45%";
+	}
+
+	// Ellers hvis den er pauset:
+	else {
+
+		// Sett den tl ikke pauset.
+		isPaused = false;
+
+		// Endre grafikken til knappen.
+		pauseButton.innerHTML = "Pause";
+		pauseButton.style.marginLeft = "46%";
+	}
+}
+
+// Funksjon som henter scenarioet du har valgt.
+function getScenario() {
+
+	// Legger valgte element i listen i en variabel.
+	var list = document.getElementById('scenlist');
+	var selectedValue = list.options[list.selectedIndex].text;
+
+	// Validering.
+	if(selectedValue.length === 0) {
+		alert('Du må velge et scenario.');
+	}
+	else {
+
+		// AJAX Request for å lese filen med navnet til scenarioet du valgte.
+		var request = new XMLHttpRequest();
+		request.open('GET', 'scenarios/' + selectedValue + '.json', false);
+		request.send(null);
+		var response = request.responseText;
+		var dataObject = JSON.parse(response);
+		
+		// Gjør om circleArray til objektene du hentet fra JSON filen.
+		circleArray = dataObject.baller;
+	}
+}
+
+// Funksjon som lagrer scenarioet du har på skjermen.
+function saveScenario() {
+	var scenname = document.getElementById('scenname').value;
+	
+	// Validering.
+	if (scenname.length === 0) {
+		alert('Du må fylle ut navnet til scenarioet.');
+	}
+	else {
+
+		// Legger arrayen av baller inn i et objekt.
+		var scenario = {
+			baller: circleArray
+		};
+
+		// Skriver dette objektet som tekst inn i en variabel.
+		var circleJSON = JSON.stringify(scenario);
+
+		// AJAX request for å poste informasjonen til et PHP script.
+		var request = new XMLHttpRequest();
+		request.open('POST', 'savescen.php', false);
+		request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		request.send('scenname=' + scenname + '&jsonstring=' + circleJSON);
+
+		// Refresh siden.
+		location.reload();
+	}
+}
 
 function determineSpeed() {
 
@@ -313,22 +395,85 @@ function checkCollision(i) {
 	 				circleArray[j].vx = (Math.cos(phi) * v2x) + (Math.cos(phi + Math.PI/2) * v2y);
 	 				circleArray[j].vy = (Math.sin(phi) * v2x) + (Math.sin(phi + Math.PI/2) * v2y);
 	 				
-	 				/* For å dytte kuler vekk for å unngå kollisjon over flere frames.
-	 				   Fungerer ikke optimalt.
-	 				   Trenger noe som garanterer at ingen sirkler vil være inne i hverandre på en frame.
-	 				   Har tenkt på å offsette kulene basert på forskjell mellom radius og kollisjonspunkt. */
+	 				// Enkel formel for å hindre klistring av baller, ikke optimal.
 	 				circleArray[i].x += circleArray[i].vx;
 	 				circleArray[j].x += circleArray[j].vx;
 	 				circleArray[i].y += circleArray[i].vy;
 	 				circleArray[j].y += circleArray[j].vy;
+	 				
+	 				// Friksjon når ballene kolliderer med hverandre.
+	 				circleArray[i].vx *= bounceFactor;
+	 				circleArray[i].vy *= bounceFactor;
+	 				circleArray[j].vx *= bounceFactor;
+	 				circleArray[j].vy *= bounceFactor;
 			
 					// Disse to objektene har nå kollidert, med dette kan de ikke kollidere med hverandre igjen denne framen.
 	 				circleArray[i].col = true;
 	 				circleArray[j].col = true;
+	 				
+	 				/* Et forsøk på anti-stick;
+	 				X og Y kordinatene til kollisjonspunktet:
+	 				colX = ((x1 * m2) + (x2 * m1)) / (m1 + m2);
+					colY = ((y1 * m2) + (y2 * m1)) / (m1 + m2);
+
+					// Lengen mellom kordinatene til ballene og kollisjonspunktet.
+					colDif1 = Math.sqrt(Math.pow((x1 - colX), 2) + Math.pow((y1 - colY), 2));
+					colDif2 = Math.sqrt(Math.pow((x2 - colX), 2) + Math.pow((y2 - colY), 2));
+
+					// Hvis farten er i negativ retning:
+					if (circleArray[i].vx < 0) {
+
+						// Legg til negativ differanse av størrelse til ballen og lendgen til kollisjonspunkt.
+						circleArray[i].x += (m1 - colDif1) * -1;
+					} else {
+
+						// Ellers legg til positiv av det samme.
+						circleArray[i].x += (m1 - colDif1);
+					}
+
+					// Resten er likt det over barre på de forskjellige vektorene.
+					if (circleArray[i].vy < 0) {
+						circleArray[i].y += (m1 - colDif1) * -1;
+					} else {
+						circleArray[i].y += (m1 - colDif1);
+					}
+
+					if (circleArray[j].vx < 0) {
+						circleArray[j].x += (m2 - colDif2) * -1;
+					} else {
+						circleArray[j].x += (m2 - colDif2);
+					}
+
+					if (circleArray[j].vy < 0) {
+						circleArray[j].y += (m2 - colDif2) * -1;
+					} else {
+						circleArray[j].y += (m2 - colDif2);
+					}*/
  				} 
  			}
  		}
 	}
+}
+
+// Funksjon som skriver ut informasjon om ballen du har selected.
+function ballInfo(i) {
+	info.style.display = 'block';
+	var constants = '<span class="infoTitle">Constants:</span><br>',
+			fric = '<span class="information">Friction: ' + bounceFactor + '</span><br>',
+			grav = '<span class="information">Gravity: ' + gravity + '</span><br>';
+
+	if (circleArray[i].sel === true) {	
+		var	title = '<span class="infoTitle">Ball ' + (i + 1) + ':</span><br>',
+			size = '<span class="information">Radius: ' + (circleArray[i].r).toFixed(2) + 'px</span><br>',
+			color = '<span class="information">Color: ' + circleArray[i].clr + '</span><br>',
+			space = '<br>',
+			coordinates = '<span class="information">X - Y Coordinates: (' + (circleArray[i].x).toFixed(2) + ') - (' + (circleArray[i].y).toFixed(2) + ')</span><br>',
+			velocities = '<span class="information">X - Y Velocities: (' + (circleArray[i].vx).toFixed(2) + ') - (' + (circleArray[i].vy).toFixed(2) + ')</span><br>',
+			collision = '<span class="information">Is colliding: ' + circleArray[i].col + '.</span>';
+
+		counter++;
+		info.innerHTML = constants + fric + grav + space + title + size + color + space + coordinates + velocities + collision;
+	} 
 }
 
 // Kjører funksjonen for å sette den i gang.
