@@ -459,17 +459,17 @@ function checkCollision(i) {
 function ballInfo(i) {
 	info.style.display = 'block';
 	var constants = '<span class="infoTitle">Constants:</span><br>',
-			fric = '<span class="information">Friction: ' + bounceFactor + '</span><br>',
-			grav = '<span class="information">Gravity: ' + gravity + '</span><br>';
+	    fric = '<span class="information">Friction: ' + bounceFactor + '</span><br>',
+	    grav = '<span class="information">Gravity: ' + gravity + '</span><br>';
 
 	if (circleArray[i].sel === true) {	
-		var	title = '<span class="infoTitle">Ball ' + (i + 1) + ':</span><br>',
-			size = '<span class="information">Radius: ' + (circleArray[i].r).toFixed(2) + 'px</span><br>',
-			color = '<span class="information">Color: ' + circleArray[i].clr + '</span><br>',
-			space = '<br>',
-			coordinates = '<span class="information">X - Y Coordinates: (' + (circleArray[i].x).toFixed(2) + ') - (' + (circleArray[i].y).toFixed(2) + ')</span><br>',
-			velocities = '<span class="information">X - Y Velocities: (' + (circleArray[i].vx).toFixed(2) + ') - (' + (circleArray[i].vy).toFixed(2) + ')</span><br>',
-			collision = '<span class="information">Is colliding: ' + circleArray[i].col + '.</span>';
+		var title = '<span class="infoTitle">Ball ' + (i + 1) + ':</span><br>',
+		    size = '<span class="information">Radius: ' + (circleArray[i].r).toFixed(2) + 'px</span><br>',
+		    color = '<span class="information">Color: ' + circleArray[i].clr + '</span><br>',
+		    space = '<br>',
+		    coordinates = '<span class="information">X - Y Coordinates: (' + (circleArray[i].x).toFixed(2) + ') - (' + (circleArray[i].y).toFixed(2) + ')</span><br>',
+		    velocities = '<span class="information">X - Y Velocities: (' + (circleArray[i].vx).toFixed(2) + ') - (' + (circleArray[i].vy).toFixed(2) + ')</span><br>',
+		    collision = '<span class="information">Is colliding: ' + circleArray[i].col + '.</span>';
 
 		counter++;
 		info.innerHTML = constants + fric + grav + space + title + size + color + space + coordinates + velocities + collision;
